@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Countdown Timer with Controls</title>
+    <!-- (Your existing styles) -->
+</head>
+<body>
+
+<div id="countdown">8</div>
+<div id="sets">Sets Completed: 0</div>
+<div id="controls">
+    <button id="startPauseButton">Start</button>
+    <button id="resetButton">Reset Sets</button>
+</div>
+
+<script>
+    let countdown = 8;
+    let sets = 0;
+    let intervalCount = 0;
+    let timerInterval;
+    let isRunning = false;
+
+    // Load local audio files
+    const timerEndSound = new Audio('beep-07.mp3');
+    const setCompletedSound = new Audio('beep-08b.mp3');
+
+    function updateTimer() {
+        document.getElementById("countdown").innerText = countdown;
+        
+        countdown--;
+
+        if (countdown < 0) {
+            intervalCount++;
+            countdown = 8;
+
+            // Play sound when timer reaches zero
+            timerEndSound.play();
+
+            if (intervalCount % 2 === 0) {
+                sets++;
+                document.getElementById("sets").innerText = `Sets Completed: ${sets}`;
+
+                // Play different sound when a set is completed
+                setCompletedSound.play();
+            }
+        }
+    }
+
+    function startPauseTimer() {
+        if (isRunning) {
+            clearInterval(timerInterval);
+            document.getElementById("startPauseButton").innerText = "Start";
+        } else {
+            timerInterval = setInterval(updateTimer, 1000);
+            document.getElementById("startPauseButton").innerText = "Pause";
+        }
+        isRunning = !isRunning;
+    }
+
+    function resetSets() {
+        sets = 0;
+        intervalCount = 0;
+        countdown = 8;
+        document.getElementById("sets").innerText = `Sets Completed: ${sets}`;
+        document.getElementById("countdown").innerText = countdown;
+
+        if (isRunning) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            document.getElementById("startPauseButton").innerText = "Start";
+        }
+    }
+
+    document.getElementById("startPauseButton").addEventListener("click", startPauseTimer);
+    document.getElementById("resetButton").addEventListener("click", resetSets);
+</script>
+
+</body>
+</html>
